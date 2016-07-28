@@ -46,7 +46,7 @@ void setup(void) {
 }
 
 void loop(void) {
-  handle = analogRead(2);
+  handle = 1023 - analogRead(2);
 
   kickNote = kick.hit();
   if (kickNote.velocity > -1) {
