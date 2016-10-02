@@ -1,12 +1,12 @@
 #include "Arduino.h"
 #include "Impactor.h"
 
-#define CAPTURE_TIME 20
+#define CAPTURE_TIME 10
 #define FORCE_THRESHOLD 500
 #define OFF_THRESHOLD 200
-#define NUMBER_OF_TRIGGER_SAMPLES_THRESHOLD 20
-#define NUMBER_OF_OFF_SAMPLES_THRESHOLD 20
-#define NOTE_OFF_DELAY 60
+#define NUMBER_OF_TRIGGER_SAMPLES_THRESHOLD 2
+#define NUMBER_OF_OFF_SAMPLES_THRESHOLD 2
+#define NOTE_OFF_DELAY 10
 
 Impactor::Impactor(int _pin) {
   fsrAnalogPin = _pin;

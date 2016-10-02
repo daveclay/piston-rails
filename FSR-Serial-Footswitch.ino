@@ -2,6 +2,8 @@
 #include <Wire.h> // Include the I2C library (required)
 #include <SparkFunSX1509.h> // Include SX1509 library
 
+SX1509 io; // Create an SX1509 object
+
 Impactor kick(0);
 Impactor snare(1);
 int handle = 0;
@@ -15,7 +17,6 @@ int lastPatchSent = 0;
 
 int reading = HIGH;
 
-SX1509 io; // Create an SX1509 object
 
 void kickOn(int velocity) {
   Serial.print("T,ON,KICK");
@@ -46,9 +47,6 @@ void setup(void) {
   Serial.begin(9600);
   pinMode(13, OUTPUT);
   setupSX1509();
-  for (int i = 12; i >= 5; i--) {
-    pinMode(i, INPUT_PULLUP);
-  }
 }
 
 void loop(void) {
@@ -79,11 +77,11 @@ void loop(void) {
       currentPatchPressed = i;
     }
   }
-
+  
   if ((millis() - lastDebounceTime) > debounceDelay) {
     if (currentPatchPressed != lastPatchSent) {
       Serial.print("PATCH,");
-      Serial.println(currentPatchPressed);
+      Serial.println(currentPatchPressed + 1);
       lastPatchSent = currentPatchPressed;
     }
   }
@@ -104,6 +102,8 @@ void setupSX1509()
     while (1)
       ; // And loop forever.
   }
+
+  io.clock(INTERNAL_CLOCK_2MHZ);
 
   // Call io.pinMode(<pin>, <mode>) to set any SX1509 pin as
   // either an INPUT, OUTPUT, INPUT_PULLUP, or ANALOG_OUTPUT
