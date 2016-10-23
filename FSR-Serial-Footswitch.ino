@@ -6,11 +6,14 @@
 const byte ARDUINO_INT_PIN = 2; // SX1509 int output to D2
 const byte SX1509_ADDRESS = 0x3E;  // SX1509 I2C address
 
+const byte FINGER_PIN = 3;
+
 SX1509 io; // Create an SX1509 object
 
 Impactor kick(0);
 Impactor snare(1);
 int handle = 0;
+int finger = 0;
 Note kickNote;
 Note snareNote;
 
@@ -23,11 +26,7 @@ int reading = HIGH;
 
 
 void kickOn(int velocity) {
-  Serial.print("T,ON,KICK");
-  Serial.print(",");
-  Serial.print(velocity);
-  Serial.print(",");
-  Serial.println(handle);
+  Serial.println("T,ON,KICK," + String(velocity) + "," + String(handle) + "," + String(finger));
 }
 
 void kickOff() {
@@ -35,11 +34,7 @@ void kickOff() {
 }
 
 void snareOn(int velocity) {
-  Serial.print("T,ON,SNARE");
-  Serial.print(",");
-  Serial.print(velocity);
-  Serial.print(",");
-  Serial.println(handle);
+  Serial.println("T,ON,SNARE," + String(velocity) + "," + String(handle) + "," + String(finger));
 }
 
 void snareOff() {
@@ -50,11 +45,13 @@ void snareOff() {
 void setup(void) {
   Serial.begin(9600);
   pinMode(13, OUTPUT);
+  pinMode(FINGER_PIN, INPUT_PULLUP);
   setupSX1509();
 }
 
 void loop(void) {
   handle = 1023 - analogRead(2);
+  finger = 1 - digitalRead(FINGER_PIN);
 
   kickNote = kick.hit();
   if (kickNote.velocity > -1) {
@@ -161,11 +158,9 @@ void allPinsTo(int value) {
   allOtherPinsTo(-1, value);
 }
 
-
 // button() is an Arduino interrupt routine, called whenever
 // the interrupt pin goes from HIGH to LOW.
-void footswitchButton()
-{
+void footswitchButton() {
   footswitchButtonPressed = true; // Set the buttonPressed flag to true
   // We can't do I2C communication in an Arduino ISR. The best
   // we can do is set a flag, to tell the loop() to check next
